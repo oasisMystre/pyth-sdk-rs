@@ -16,7 +16,6 @@ pyth-sdk.workspace = true
 
 solana-program.workspace = true
 borsh.workspace = true
-borsh-derive.workspace = true
 bytemuck = { version = "1.7.2", features = ["derive"] }
 num-derive = "0.3"
 num-traits = "0.2"

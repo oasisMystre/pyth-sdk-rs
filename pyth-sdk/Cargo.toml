@@ -17,7 +17,6 @@ crate-type = ["cdylib", "lib"]
 [dependencies]
 hex = { version = "0.4.3", features = ["serde"] }
 borsh.workspace = true
-borsh-derive.workspace = true
 serde = { workspace = true, features = ["derive"] }
 schemars = "0.8.8"
 getrandom = { version = "0.2.2", features = ["custom"] }

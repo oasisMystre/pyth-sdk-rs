@@ -191,7 +191,7 @@ pub struct ProductAccount {
 }
 
 impl ProductAccount {
-    pub fn iter(&self) -> AttributeIter {
+  pub fn iter<'a>(&'a self) -> AttributeIter<'a> {
         AttributeIter {
             attrs: &self.attr[..min(
                 (self.size as usize).saturating_sub(PROD_HDR_SIZE),
