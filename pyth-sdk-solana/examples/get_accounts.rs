@@ -4,20 +4,13 @@
 // Please use account structure only if you need it.
 
 use pyth_sdk_solana::state::{
-    load_mapping_account,
-    load_price_account,
-    load_product_account,
-    CorpAction,
-    PriceType,
+    load_mapping_account, load_price_account, load_product_account, CorpAction, PriceType,
     SolanaPriceAccount,
 };
+use solana_address::Address;
 use solana_client::rpc_client::RpcClient;
-use solana_program::pubkey::Pubkey;
 use std::str::FromStr;
-use std::time::{
-    SystemTime,
-    UNIX_EPOCH,
-};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn get_price_type(ptype: &PriceType) -> &'static str {
     match ptype {
@@ -37,7 +30,7 @@ fn main() {
     let url = "http://api.devnet.solana.com";
     let key = "BmA9Z6FjioHJPpjT39QazZyhDRUdZy2ezwx4GiDdE2u2";
     let clnt = RpcClient::new(url.to_string());
-    let mut akey = Pubkey::from_str(key).unwrap();
+    let mut akey = Address::from_str(key).unwrap();
 
     loop {
         // get Mapping account from key
@@ -59,7 +52,7 @@ fn main() {
             }
 
             // print all Prices that correspond to this Product
-            if prod_acct.px_acc != Pubkey::default() {
+            if prod_acct.px_acc != Address::default() {
                 let mut px_pkey = prod_acct.px_acc;
                 loop {
                     let price_data = clnt.get_account_data(&px_pkey).unwrap();
@@ -118,7 +111,7 @@ fn main() {
                     }
 
                     // go to next price account in list
-                    if price_account.next != Pubkey::default() {
+                    if price_account.next != Address::default() {
                         px_pkey = price_account.next;
                     } else {
                         break;
@@ -133,7 +126,7 @@ fn main() {
         }
 
         // go to next Mapping account in list
-        if map_acct.next == Pubkey::default() {
+        if map_acct.next == Address::default() {
             break;
         }
         akey = map_acct.next;

@@ -25,7 +25,7 @@ use pyth_sdk_solana::state::SolanaPriceAccount;
 use crate::instruction::ExampleInstructions;
 use crate::state::AdminConfig;
 
-pub fn process_instruction(
+pub unsafe fn process_instruction(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
     input: &[u8],
@@ -58,7 +58,8 @@ pub fn process_instruction(
             SolanaPriceAccount::account_info_to_feed(pyth_loan_account)?;
             SolanaPriceAccount::account_info_to_feed(pyth_collateral_account)?;
 
-            let config_data = config.try_to_vec()?;
+            let mut  config_data = vec![];
+            config.serialize(&mut config_data)?;
             let config_dst = &mut admin_config_account.try_borrow_mut_data()?;
             sol_memcpy(config_dst, &config_data, 1 + 32 + 32);
             Ok(())

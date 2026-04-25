@@ -1,5 +1,5 @@
 use num_derive::FromPrimitive;
-use solana_program::program_error::ProgramError;
+use solana_program_error::ProgramError;
 use thiserror::Error;
 
 /// Errors that may be returned by Pyth.

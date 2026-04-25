@@ -7,25 +7,13 @@ pub use self::error::PythError;
 mod error;
 pub mod state;
 
-use solana_program::account_info::{
-    Account,
-    AccountInfo,
-    IntoAccountInfo,
-};
-use solana_program::pubkey::Pubkey;
+use solana_account::Account;
+use solana_account_info::AccountInfo;
+use solana_address::Address;
 
-use state::{
-    load_price_account,
-    GenericPriceAccount,
-    SolanaPriceAccount,
-};
+use state::{load_price_account, GenericPriceAccount, SolanaPriceAccount};
 
-pub use pyth_sdk::{
-    Price,
-    PriceFeed,
-    PriceIdentifier,
-    ProductIdentifier,
-};
+pub use pyth_sdk::{Price, PriceFeed, PriceIdentifier, ProductIdentifier};
 
 /// Maximum valid slot period before price is considered to be stale.
 pub const VALID_SLOT_PERIOD: u64 = 25;
@@ -43,8 +31,8 @@ pub fn load_price_feed_from_account_info(
 /// It is a helper function which constructs Account Info when reading Account in clients.
 #[deprecated(note = "solana-specific, use SolanaPriceAccount::account_to_feed instead.")]
 pub fn load_price_feed_from_account(
-    price_key: &Pubkey,
-    price_account: &mut impl Account,
+    price_key: &Address,
+    price_account: &Account,
 ) -> Result<PriceFeed, PythError> {
     SolanaPriceAccount::account_to_feed(price_key, price_account)
 }
@@ -64,10 +52,23 @@ where
     }
 
     pub fn account_to_feed(
-        price_key: &Pubkey,
-        price_account: &mut impl Account,
+        price_key: &Address,
+        price_account: &Account,
     ) -> Result<PriceFeed, PythError> {
-        let price_account_info = (price_key, price_account).into_account_info();
+        let mut lamport = price_account.lamports;
+        let mut data = price_account.data.clone();
+        let signer = Address::default();
+
+        let price_account_info = AccountInfo::new(
+            price_key,
+            false,
+            false,
+            &mut lamport,
+            &mut data,
+            &signer,
+            false,
+        );
+
         Self::account_info_to_feed(&price_account_info)
     }
 }

@@ -9,7 +9,7 @@ use solana_program::entrypoint::ProgramResult;
 use solana_program::pubkey::Pubkey;
 
 entrypoint!(process_instruction);
-fn process_instruction(
+unsafe fn process_instruction(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
     instruction_data: &[u8],
